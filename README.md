@@ -1,6 +1,6 @@
 # Syscoin Improvement Proposals (SIPs)
 
-To comment please create an Issue using Github for opening a discussion with contributors.
+To comment please create an [issue](https://github.com/syscoin/sips/issues/new/choose) using Github for opening a discussion with contributors.
 
 ## Syscoin Improvement Proposal Summary
 Number | Layer | Title | Owner | Type | Status

@@ -53,17 +53,16 @@ However the Program Manager End-Point will need cloud management to ensure resil
 
 It does not apply to all transactions globally. It will only apply to assets that define an address it the witness field of the asset.
 The spec looks as follows:
-``enum {
+``
     ASSET_UPDATE_ADMIN=1, // god mode flag, governs flags field below
     ASSET_UPDATE_DATA=2, // can you update public data field?
     ASSET_UPDATE_CONTRACT=4, // can you update smart contract?
     ASSET_UPDATE_SUPPLY=8, // can you update supply?
     ASSET_UPDATE_FLAGS=16, // can you update flags? if you would set permanently disable this one and admin flag as well
     ASSET_UPDATE_ALL=31
-};
+``
 
-class CAsset: public CAssetAllocation {
-public:
+``
     // ERC20 smart contract to connect to the sysethereum bridge
     std::vector<unsigned char> vchContract;
     // if changing the ERC20 smart contract must specify the previous one for disconnect/re-org purposes
@@ -96,7 +95,7 @@ You can see the new field of strWitnessAddress which if set will require consens
 === Design === 
 The overall design looks as follows:
 
-<img src=sip-0002/design.png></img>
+<img src=SIP-0002/design.png></img>
 
 On the consensus layer, the SPT asset definition will include one more field for a witness address. If it is set, any transactions involving asset allocations (not asset update/transfer) will require the witness signature from that address based on the transaction sighash.
 Doing so will mean one more input will be used in creating a simple transfer for an asset allocation but the cost of a simple input is fairly minimal, just one signature verification must occur regardless of how many people signed off on it through the end-points (either through threshold signature or secret key sharing)

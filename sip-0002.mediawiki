@@ -1,0 +1,136 @@
+<pre>
+  BIP: 2
+  Title: Network enforced business rulesets
+  Author: Sidhujag <jsidhu@blockchainfoundry.co>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/syscoin/sips/wiki/Comments:SIP-0002
+  Status: Draft
+  Type: Standards Track
+  Created: 2020-07-19
+</pre>
+
+== Introduction ==
+
+Stablecoins and crypto assets today that would like to interface with the existing financial frameworks which have evolved to deal with tax evasion, fraud, terrorist activity and money laundering through the use of KYC/AML standards must follow the same standards in order to comply.
+We are at a cross-roads where crypto pioneers expect the financial system to adapt and the financial system requires those that need to integrate adapt to its requirements which have been well thought out over many generations of financial markets being thoroughly market tested.
+A happy medium where we can realize the settlement of value on a decentralized ledger yet still comply for an opt-in appraoch would present te ability for businesses running crypto asset systems to comply and create benefits and efficiencies that did not exist prior to the crypto economic expansion.
+There have been attempts to do so using centralized or permissioned ledgers which are consortium based however the settlement of value on those consortium or centralized systems present risks that are outweighed with benefits of open, censorsip resistant and legal-neutral systems which make no distinctions on market participants.
+Being able to leverage the tremendous security of the Bitcoin network through settlement of value (inability of manipulating settlement which reduces insurance costs, custodial service costs and thus provides more efficient overall value soveriegn ownership), would be ideal in a marriage with legally-compliant transferability of those assets.
+
+The Syscoin network presents this option as it is based on the Bitcoin network protocol, also merge-mines with Bitcoin sharing its network security but presents unique features for businesses that are not possible on Bitcoin such as Asset tokenization and real-time micro-transaction scalability through the use of a DAG (Directed Acylical Graph) payment mechanism called [https://syscoin.org/zdag_syscoin_whitepaper.pdf, ZDAG].
+
+Being able to provide this compliance at scale without affecting the underlying premise of global settlement opportunities to allow for financial inclusiveness yet remain compliance without hindering other non-compliant market participants is a requirement in order to bring blockchain technology to be of any value to todays financial but also for blockchain technology to be of any value to the people looking for soveriegn value ownersip.
+
+Thus the system should be able to provide compliance but not require it in those cases compliance is not needed. For assets that require it, it should be enabled to enforce consensus amongst all participants that compliance is mandatory and provided easing integration into existing financial markets.
+
+=== Abstract ===
+
+This document proposes a standard consensus rules to apply a witness signature enforcement for Syscoin SPT transactions that 'opt-in'.
+
+The key underlying premise is that compliance is necessary and provided, however scalability is also a necessity when dealing with P2P based BFT (byzantine fault tolerant) crypto-economic consensus systems that inherently lack scalability required for global adoption. With the requirement set forth that scalability is thus not to be negatively affected we believe we have found a way to be accomodative of requirements to provide the functionality needed for full compliance regardless of jurisdiction.
+=== Motivation ===
+
+Pre-compliance is a holy-grail use-case for crypto-assets that are compliant with global regulations and money transmission policies. THey are vastly different depending on jurisdiction which makes encoding these in consensus very difficult especially as consensus code is not mutable once deployed.
+
+Pre-compliance allows post-compliance to come for free, as checks are made prior to validation, compliance is simply proving that no transaction may occur on the network without the required policy checks to occur which may be audited by policy makers at any time. The concern policy makers have with crypto-asset compliance is that typically any pre-compliance 
+strategy involves changes that are superflous, in that they may be adapted by wallets, and services but not enforced by consensus and so does not have a broad enough mechanism to keep evaders at bay from crafting transactions that skip these policy checks.
+Doing so on the network validation will ensure to policy makers that there is no concern around transactions entering the ledger that do not conform to regulations, and the rules are also business-centric so they may adapt as legal clarifications or frameworks adapt to the industry.
+Part of the compliance framework is on-chain analysis tools such as [https://bitrankverified.com/home, QLUE or BitRank] which will further allow for transaction compliance for address monitoring.
+This actually enables crypto-assets to go above and beyond what is requested of todays KYC/AML regulations and allows for assets to settle on a permissioneless system yet apply the rulesets needed to operate in jurisdictions that require certian compliance checks. 
+Post-validation such as freezing, black-listing essentially is enabled without requiring any consensus changes, as transfers may be blocked by pre-compliance verifications by the end-points on future transactions.
+
+Compliance is not the only use-case, business rules like Auxiliary-Fees or fees that a business extracts per transaction as part of the CODBs(Cost Of Doing Business) are applied as a revenue model to offset running costs or part of a business tokeneconomic model. These fees typically were either wallet-driven or central API driven however now can be enforced by consensus and may be adaptable at any time based on evolving business requirements.
+Here the end-point verification will ensure that sufficient fees are applied to a transaction and approve/reject based on criteria defined by the business. API driven connectivity will ensure that wallets, services, exchanges adapt to the requirements by consuming APIs that conform to the process of doing the check and obtain signature needed for the witness for transaction validation to occur successfully.
+
+== Description ==
+
+On Syscoin we add a witness field and require signature sign off on this witness in all transfers of the token itself (not management transactions to change the asset itself). On the API side its really open and up to the implementaors but below is a potential reference design.
+An API such as SyscoinJS API can know based on a registry which Program Manager End-Point to reach out to or perhaps the URL of the End-Point is encoded in the public data field of the asset definition. The End-Point is requested to share what the business requirements are for example if extra fees (Auxiliary fees) are to be enforced for tokeneconomics purposes related to the project this can be described in the response so the SyscoinJS API can know
+what inputs/outputs to create for the transaction prior to Witness signature. Upon crafting the final transaction, the End-Point is queried for a Witness signature so it will validate on the network. Here the End-Point either has a naive implemntation storing the private key for signing after doing basic checks (KYC/AML, on-chain analysis, black/white list approvals) and upon approval sign with the private key of the witness address defined in the Asset witness field.
+To reduce central points of attack on the server holding the private key, threshold signatures or Samir Secret Sharing strategies can be used to offload the storage of the private key across multiple End-Points. These End-Points should only be known to the Program Manager End-Point or connected amongst themselves to avoid DOS vulnerabilities. Either of the End-Points can assume role of coordinator incase the Program Manager End-Point is unresponsive.
+
+However the Program Manager End-Point will need cloud management to ensure resiliance, colocation per query, CDN and automatic backups and restorals soudl be in place for resiliance and fault-tolerance. The private key itself can be protected further by threshold sharding or thresold signatures so that even if some End-Points do not respond in a timely manner not all need to respond to be able to successfully sign a transaction.
+
+It does not apply to all transactions globally. It will only apply to assets that define an address it the witness field of the asset.
+The spec looks as follows:
+``enum {
+    ASSET_UPDATE_ADMIN=1, // god mode flag, governs flags field below
+    ASSET_UPDATE_DATA=2, // can you update public data field?
+    ASSET_UPDATE_CONTRACT=4, // can you update smart contract?
+    ASSET_UPDATE_SUPPLY=8, // can you update supply?
+    ASSET_UPDATE_FLAGS=16, // can you update flags? if you would set permanently disable this one and admin flag as well
+    ASSET_UPDATE_ALL=31
+};
+
+class CAsset: public CAssetAllocation {
+public:
+    // ERC20 smart contract to connect to the sysethereum bridge
+    std::vector<unsigned char> vchContract;
+    // if changing the ERC20 smart contract must specify the previous one for disconnect/re-org purposes
+    std::vector<unsigned char> vchPrevContract;
+    // asset symbol 1-8 characters
+    std::string strSymbol;
+    // public data field, JSON input for fields that are relevant like description and End-Point definitions
+    std::vector<unsigned char> vchPubData;
+    // previous public data incase public data is changing for disconnect/re-org purposes
+    std::vector<unsigned char> vchPrevPubData;
+    // balance being updated or defined upon creation of asset
+    uint64_t nBalance;
+    // total supply only set when creating an asset
+    uint64_t nTotalSupply;
+    // maximum supply set when creating an asset
+    uint64_t nMaxSupply;
+    // precision for this asset defined for user display purposes
+    unsigned char nPrecision;
+    // update flags mask of values from the enum above
+    unsigned char nUpdateFlags;
+    // previous flags if flags are changing for disconnect/re-org purposes
+    unsigned char nPrevUpdateFlags;
+    // NEW: witness required to sign on all transactions for this asset
+    std::string strWitnessAddress;
+    // NEW: previous witness required to sign on all transactions for this asset if witness address is changed for disconnect/re-org purposes
+    std::string strPrevWitnessAddress;
+``
+You can see the new field of strWitnessAddress which if set will require consensus to validate that there exists an input from this address which will implicitely verify the signature of that input through OP_CHECKSIG script logic.
+
+=== Design === 
+The overall design looks as follows:
+
+<img src=sip-0002/design.png></img>
+
+On the consensus layer, the SPT asset definition will include one more field for a witness address. If it is set, any transactions involving asset allocations (not asset update/transfer) will require the witness signature from that address based on the transaction sighash.
+Doing so will mean one more input will be used in creating a simple transfer for an asset allocation but the cost of a simple input is fairly minimal, just one signature verification must occur regardless of how many people signed off on it through the end-points (either through threshold signature or secret key sharing)
+
+=== On-chain validation and enforcement, signature creation off-chain and distributed ===
+On-chain there will only be a signature required by a witness defined in the SPT. Offchain however one may wish to use multiple end-points to recreate the signature necessary for the witness validation. To reduce central bottlenecks in the system yet retain performance, you may choose to use
+secret sharing or threshold signatures (former if performance is of more concern, later if privacy is of more concern). Infact depending on market conditions, one may choose to deploy different strategies at any time without requiring any change to the underlying consensus validation.
+
+=== Secret key sharing ===
+Samir secret sharing allows one to recreate a key yet retain compatibility with the underlying signature verification and validation process. The shards are distributed amongst peers and a central coordinator extracts and applies them together up to a thresold to re-create the private key necessary for signing. This comes at an obvious tradeoff of private key leakage yet it does have performance benefits as well as solves issues of downtime should that be the biggest concern.
+Perhaps it is not a big concern of leakage as long as the coordinator service is not confiscated, and if it is, the managers of the SPT would be able to update the key to a new one and re-deploy on new secured services without succumbing to further ramifications of any such attacks.
+If the concern around privacy is higher than performance then a threshold signature scheme can be employed at some cost of performance (requires roundtrip interactivity amongst end-point peers and crytograpic primitives that take non-trivial amount of CPU cycles and RAM).
+Secure communication and encrypted channels can be created to avoid MITM or eavesdropping however the central coordinator is a central bottleneck in the system, although easily mitigated as redeployment is fairly simple if a breach occurs and no funds are at risk, rest or live.
+The most an attacker can do is prevent or not-prevent certain transactions from validating on the network, the non-prevantative case can be mitigated be further post-compliance measures to block addresses.
+
+=== Multisignatures and Threshold Signatures ===
+To dissolve a single-point-of-attack scenario managers of SPTs may want to distribute signature creation to offload risk and have better control over situations where some end-points or API services have downtime.
+You may wish to use a threshold (high enough to justify validation securely, yet prevent situations where individual server downtime causes systemic downtime). There are different strategies to employee signing the witness signature required for transaction validation.
+
+As per [https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki, BIP-0340], with Schnorr signatures participants can aggregate their public keys into a single public key which they can jointly sign for. This allows ''n''-of-''n'' multisignatures which, from a verifier's perspective, are no different from ordinary signatures, giving improved privacy and efficiency versus ''CHECKMULTISIG'' or other means.
+
+Moreover, Schnorr signatures are compatible with [https://web.archive.org/web/20031003232851/http://www.research.ibm.com/security/dkg.ps distributed key generation], which enables interactive threshold signatures schemes, e.g., the schemes described by [http://cacr.uwaterloo.ca/techreports/2001/corr2001-13.ps Stinson and Strobl (2001)] or [https://web.archive.org/web/20060911151529/http://theory.lcs.mit.edu/~stasio/Papers/gjkr03.pdf Genaro, Jarecki and Krawczyk (2003)]. These protocols make it possible to realize ''k''-of-''n'' threshold signatures, which ensure that any subset of size ''k'' of the set of ''n'' signers can sign but no subset of size less than ''k'' can produce a valid Schnorr signature. However, the practicality of the existing schemes is limited: most schemes in the literature have been proven secure only for the case ''k-1 < n/2'', are not secure when used concurrently in multiple sessions, or require a reliable broadcast mechanism to be secure. Further research is necessary to improve this situation.
+
+Typically a multi-signature scheme on-chain will lead to n-1 signatures required and verified on chain. This is obviously the most secure from a single-point-of-attack scenario but it is not practical for larger ''n''-of-''n'' values.
+
+Other works include using BLS signatures as described by [https://alinush.github.io/2020/03/12/scalable-bls-threshold-signatures.html, Fast and Scalable BLS Threshold Signatures], which are easy to work with and allow end-points to distribute keys while at rest never having to re-create the private key required for signature because of public key/signature aggregation. An example op-code construction is described here [https://medium.com/cryptoadvance/bls-signatures-better-than-schnorr-5a7fe30ea716, BLS signature introduction]
+ECDSA threshold signatures are also possible as described by [https://eprint.iacr.org/2020/498.pdf, Threshold ECDSA for Decentralized Asset Custody]. This will retain compatibility with the current ECDSA infrastructure in Syscoin however if we move to Schnorr we can apply Schnorr threshold signatures instead in similar construct.
+
+== Test Vectors and Reference Code ==
+
+== Footnotes ==
+
+<references />
+
+== Acknowledgements ==
+
+Thanks goes to many industry veterans that made this document possible, individuals and companies including but not limited to Mark Vernon of TagCash (for our discovery session), Lance Morginn of Blockchain Intelligence Group (specification validation), Zak Cole of Whiteblock.io and the Syscoin Foundation (Technical discussions related to the requirements of this proposal).

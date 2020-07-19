@@ -107,4 +107,4 @@ ECDSA threshold signatures are also possible as described by [https://eprint.iac
 
 == Acknowledgements ==
 
-Thanks goes to many industry veterans that made this document possible, individuals and companies including but not limited to Mark Vernon of TagCash (for our discovery session), Lance Morginn of Blockchain Intelligence Group (specification validation), Zak Cole of Whiteblock.io and the Syscoin Foundation (Technical discussions related to the requirements of this proposal).
+Thanks goes to many industry veterans that made this document possible, individuals and companies including but not limited to Mark Vernon of TagCash (for our discovery session), Marc Nicholson of Blockchain Foundry (Market analysis and validation), Lance Morginn of Blockchain Intelligence Group (specification validation), Zak Cole of Whiteblock.io and the Syscoin Foundation (Technical discussions related to the requirements of this proposal).

@@ -94,7 +94,7 @@ Moreover, Schnorr signatures are compatible with [https://web.archive.org/web/20
 Typically a multi-signature scheme on-chain will lead to n-1 signatures required and verified on-chain. This is obviously the most secure from a single-point-of-attack scenario but it is not practical for larger ''n''-of-''n'' values.
 
 Other works include using BLS signatures as described by [https://alinush.github.io/2020/03/12/scalable-bls-threshold-signatures.html, Fast and Scalable BLS Threshold Signatures], which are easy to work with and allow end-points to distribute keys while at rest never having to re-create the private key required for signature because of public key/signature aggregation. An example op-code construction is described here [https://medium.com/cryptoadvance/bls-signatures-better-than-schnorr-5a7fe30ea716, BLS signature introduction]
-ECDSA threshold signatures are also possible as described by [https://eprint.iacr.org/2020/498.pdf, Threshold ECDSA for Decentralized Asset Custody]. This will retain compatibility with the current ECDSA infrastructure in Syscoin however if we move to Schnorr we can apply Schnorr threshold signatures instead in similar constructs.
+ECDSA threshold signatures are also possible as described by [https://eprint.iacr.org/2020/498.pdf, Adam Gągol, Jędrzej Kula, Damian Straszak and Michał Świętek 2020]. This will retain compatibility with the current ECDSA infrastructure in Syscoin however if we move to Schnorr we can apply Schnorr threshold signatures instead in similar constructs.
 
 == Test Vectors and Reference Code ==
 

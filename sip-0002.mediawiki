@@ -99,7 +99,7 @@ Other works include using BLS signatures as described by [https://alinush.github
 
 ECDSA threshold signatures are also possible as described by [https://eprint.iacr.org/2020/498.pdf, Adam Gągol, Jędrzej Kula, Damian Straszak and Michał Świętek 2020]. This will retain compatibility with the current ECDSA infrastructure in Syscoin however if we move to Schnorr we can apply Schnorr threshold signatures instead in similar constructs.
 
-ECDSA threshold signatures rely on random numbers as part of their constructions which BLS signaturs do not, BLS signatures are not isomorphic and thus are easy to work with however verification costs suffer compared to ECDSA, some benchmark figures are showin in the links above. BLS signatures do not use random number generation as part of their construction nor aggregation.
+ECDSA threshold signatures rely on random numbers as part of their constructions which BLS signatures do not, BLS signatures are explicit isomorphic and thus are easy to work in aggregate form however verification costs suffer compared to ECDSA, some benchmark figures are shown in the links above. BLS signatures do not use random number generation as part of their construction nor aggregation.
 
 Because of the use of this random number dependence along with other factors outside of the scope of this SIP, ECDSA uses zero-knoweldge proofs as part of their efficient construction for threshold signatures amongst End-Points. Multiple rounds of interactivity between End-Points are needed to ensure they are acting as honest, valid signees. The paper by Gągol et all tries to address this by using BLS signature construction as a standard for performance but applied to ECDSA.
 == Test Vectors and Reference Code ==

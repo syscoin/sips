@@ -1,5 +1,5 @@
 <pre>
-  BIP: 2
+  SIP: 2
   Title: Network enforced business rulesets
   Author: Sidhujag <jsidhu@blockchainfoundry.co>
   Comments-Summary: No comments yet.

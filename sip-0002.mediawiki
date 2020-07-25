@@ -132,4 +132,4 @@ A hybrid off-chain/on-chain solution is presented by Syscoin where on-chain is u
 
 == Acknowledgements ==
 
-Thanks goes to many industry veterans that made this document possible. Individuals and companies including but not limited to Mark Vernon of TagCash (for our discovery session), Marc Nicholson of Blockchain Foundry (Market analysis and validation), Lance Morginn of Blockchain Intelligence Group (specification validation), Zak Cole of Whiteblock.io (proofing), Bradley Stephenson of Syscoin Foundation (proofing), and Amardeep Badyal (proofing).
+Thanks goes to many industry veterans that made this document possible. Individuals and companies including but not limited to Marc Nicholson of Blockchain Foundry (Discovery sessions, market analysis and validation), Lance Morginn of Blockchain Intelligence Group (specification validation), Zak Cole of Whiteblock.io (proofing), Bradley Stephenson of Syscoin Foundation (proofing), and Amardeep Badyal (proofing).

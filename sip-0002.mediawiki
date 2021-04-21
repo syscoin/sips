@@ -125,7 +125,7 @@ Allowing offchain payments and specifically the BOLT specification, are critical
 A hybrid off-chain/on-chain solution is presented by Syscoin where on-chain is used for slightly higher fees to incentivize participants to use off-chain without sacrificing trustlessness or decentralization, yet in this case remain compliant where applicable. Z-DAG ideally is utilized when there are occasional resilience issues with off-chain payments which are inevitable since there is no fault tolerance in the use of off-chain globally non-consensus based payments.
 
 == Test Vectors and Reference Code ==
-
+[https://github.com/syscoin/syscoin/blob/master/test/functional/feature_asset_notary.py Functional tests]
 == Footnotes ==
 
 <references />
